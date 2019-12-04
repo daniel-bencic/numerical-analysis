@@ -7,11 +7,11 @@ Implementation of the following linear algebra algorithms:
 * none
 
 # How To Run
-1. `git clone https://github.com/daniel-bencic/linalg.git`
-2. `cd linalg/build`
+1. `git clone https://github.com/daniel-bencic/numerical-analysis.git`
+2. `cd numerical-analysis/build`
 4. `cmake ..`
 5. `make`
-6. run `linalg`
+6. run `numerical-analysis`
 
 # Comments
 Works for: </br>
