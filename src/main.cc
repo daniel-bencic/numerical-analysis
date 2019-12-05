@@ -3,8 +3,10 @@
 
 int main(int argc, char *argv[])
 {
-	num::Matrix<double> m = num::create_identity_matrix<double>(3, 3);
-	std::cout << m(0, 0) << std::endl;
-	std::cout << m(0, 1) << std::endl;
+	num::Matrix<double> m{ 3, 2 };
+	m(0, 1) = 2;
+	std::cout << m << std::endl;
+	m.transpose();
+	std::cout << m << std::endl;
 	return 0;
 }
