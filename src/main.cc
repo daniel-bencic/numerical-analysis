@@ -2,6 +2,7 @@
 #include <string>
 #include <regex>
 #include "matrix.hh"
+#include "direct-solvers.hh"
 
 bool read_matrix(num::Matrix<double> *mp);
 void linear_algebra_mode();
@@ -30,7 +31,7 @@ int main(int argc, char *argv[])
 	}
 
 	if (unkown) {
-		std::cout <<  "Try: '-h'\n";
+		std::cout <<  "Try: '-h'" << std::endl;
 		return 0;
 	}
 
@@ -56,9 +57,9 @@ int main(int argc, char *argv[])
 		delete mat;
 	} else if (mode == 't') {
 		std::cout << "TEST MODE (dev only)" << std::endl;
-
-		num::Matrix<double> m = num::create_identity_matrix<double>(3, 3);
-		std::cout << m[0][0] << std::endl;
+		num::GaussianElimination<double> ge{ };
+		std::vector<double> res = ge.solution();
+		std::cout << res.size() << std::endl;
 	}
 	
 	return 0;
@@ -66,7 +67,7 @@ int main(int argc, char *argv[])
 
 bool read_matrix(num::Matrix<double> *mp)
 {
-	std::cout << "matrix dimensions:\n";
+	std::cout << "matrix dimensions:" << std::endl;
 	unsigned rows = 0, cols = 0;
 	std::cout << "rows: ";
 	std::cin >> rows;
@@ -75,7 +76,7 @@ bool read_matrix(num::Matrix<double> *mp)
 
 	*mp = num::Matrix<double>{ rows, cols };
 	
-	std::cout << "reading matrix (a00, a01[, ...];a10, a11[, ...][; ...]):\n";
+	std::cout << "reading matrix (a00, a01[, ...];a10, a11[, ...][; ...]):" << std::endl;
 	std::string str;
 	std::cin >> str;
 	
