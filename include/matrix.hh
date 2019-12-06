@@ -14,6 +14,8 @@ namespace num {
 		Matrix(const unsigned rows, const unsigned cols);
 		T operator()(const unsigned row, const unsigned col) const;
 		T& operator()(const unsigned row, const unsigned col);
+		const std::vector<T>& operator[](const unsigned row) const;
+		std::vector<T>& operator[](const unsigned row);
 		unsigned rows() const;
 		unsigned cols() const;
 		void transpose();
@@ -51,6 +53,22 @@ namespace num {
 		assert(col >= 0 && col < _cols);
 		
 		return _data[row][col];
+	}
+
+	template<typename T>
+	const std::vector<T>& Matrix<T>::operator[](const unsigned row) const
+	{
+		assert(row >= 0 && row < _rows);
+		
+		return _data[row];
+	}
+
+	template<typename T>
+	std::vector<T>& Matrix<T>::operator[](const unsigned int row)
+	{
+		assert(row >= 0 && row < _rows);
+		
+		return _data[row];
 	}
 
 	template<typename T>

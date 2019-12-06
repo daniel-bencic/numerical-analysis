@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
 		while (c = *++argv[0]) {
 			switch (c) {
 			case 'l':
+			case 't':
 				mode = c;
 				break;
 			case 'h':
@@ -53,6 +54,11 @@ int main(int argc, char *argv[])
 		}
 		std::cout << *mat << std::endl;
 		delete mat;
+	} else if (mode == 't') {
+		std::cout << "TEST MODE (dev only)" << std::endl;
+
+		num::Matrix<double> m = num::create_identity_matrix<double>(3, 3);
+		std::cout << m[0][0] << std::endl;
 	}
 	
 	return 0;
