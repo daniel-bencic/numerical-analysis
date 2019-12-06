@@ -10,6 +10,7 @@ namespace num {
 	template<typename T>
 	class Matrix {
 	public:
+		Matrix() = default;
 		Matrix(const unsigned rows, const unsigned cols);
 		T operator()(const unsigned row, const unsigned col) const;
 		T& operator()(const unsigned row, const unsigned col);
@@ -96,6 +97,38 @@ namespace num {
 	}
 
 	template<typename T>
+	Matrix<T> operator+(const Matrix<T>& a, const Matrix<T>& b)
+	{
+		assert(a.rows() == b.rows());
+		assert(a.cols() == b.cols());
+		
+		Matrix<T> m = a;
+		for (int i = 0; i < a.rows(); i++) {
+			for (int j = 0; j < a.cols(); j++) {
+				m(i, j) += b(i, j);
+			}
+		}
+		
+		return m;
+	}
+
+	template<typename T>
+	Matrix<T> operator-(const Matrix<T>& a, const Matrix<T>& b)
+	{
+		assert(a.rows() == b.rows());
+		assert(a.cols() == b.cols());
+		
+		Matrix<T> m = a;
+		for (int i = 0; i < a.rows(); i++) {
+			for (int j = 0; j < a.cols(); j++) {
+				m(i, j) -= b(i, j);
+			}
+		}
+		
+		return m;
+	}
+
+	template<typename T>
 	std::ostream& operator<<(std::ostream& os, const Matrix<T>& a)
 	{
 		std::ios::fmtflags flags = os.flags();
@@ -104,6 +137,7 @@ namespace num {
 			for (int j = 0; j < a.cols(); j++) {
 				os << std::setw(10) << a(i, j);
 			}
+			if (i == a.rows() - 1) break;
 			os << "\n";
 		}
 		os.flags(flags);
