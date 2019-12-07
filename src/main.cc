@@ -5,12 +5,13 @@
 #include "direct-solvers.hh"
 
 bool read_matrix(num::Matrix<double>& mat, const std::string& msg);
-void linear_algebra_mode();
+int linear_algebra_mode(char algo);
+void print_linear_system_solution(const num::LinearSolver<double>& solv);
 
 int main(int argc, char *argv[])
 {
 	bool help = false, unkown = false;
-	char c, mode;
+	char c, mode, algorithm;
 	while (--argc > 0 &&  (*++argv)[0] == '-') {
 		while (c = *++argv[0]) {
 			switch (c) {
@@ -21,6 +22,10 @@ int main(int argc, char *argv[])
 			case 'h':
 				help = true;
 	       			break;
+			case '1':
+			case '2':
+				algorithm = c;
+				break;
 			default:
 				std::cerr << "unrecognized command line option -" << c << "." << std::endl;
 				argc = 0;
@@ -39,6 +44,8 @@ int main(int argc, char *argv[])
 		std::cout << "USAGE: numerical-analysis [option]\n\n"
 			  << "OPTIONS:\n"
 			  << "        -l: linear algebra module\n"
+			  << "                -1 gaussian elimination\n"
+			  << "                -2 LU decomposition\n"
 			  << "        -t: TODO"
 			  << std::endl;
 
@@ -46,23 +53,7 @@ int main(int argc, char *argv[])
 	}
 
 	if (mode == 'l') {
-		std::cout << "LINEAR ALGEBRA MODE" << std::endl;
-		
-		num::Matrix<double> mat;
-		if (!read_matrix(mat, "reading matrix (a00, a01[, ...];a10, a11[, ...][; ...]):")) {
-			std::cout << "error reading matrix." << std::endl;
-			return -1;
-		}
-		std::cout << mat << std::endl;
-
-		num::Matrix<double> vec;
-		if (!read_matrix(vec, "reading vector (a0; a1;[ ...;]:")) {
-			std::cout << "error reading vector." << std::endl;
-		}
-		std::cout << vec << std::endl;
-
-		num::LUDecomposition<double> lu(mat, vec);
-		std::cout << lu.solution() << std::endl;
+		return linear_algebra_mode(algorithm);
 	} else if (mode == 't') {
 		std::cout << "TEST MODE (dev only)" << std::endl;
 		num::GaussianElimination<double> ge;
@@ -97,4 +88,37 @@ bool read_matrix(num::Matrix<double>& mat, const std::string& msg)
 	}
 	
 	return true;
+}
+
+int linear_algebra_mode(char algo)
+{
+	std::cout << "LINEAR ALGEBRA MODE" << std::endl;
+		
+	num::Matrix<double> mat;
+	if (!read_matrix(mat, "reading matrix (a00, a01[, ...];a10, a11[, ...][; ...]):")) {
+		std::cout << "error reading matrix." << std::endl;
+		return -1;
+	}
+	
+	num::Matrix<double> vec;
+	if (!read_matrix(vec, "reading vector (a0; a1;[ ...;]:")) {
+		std::cout << "error reading vector." << std::endl;
+		return -1;
+	}
+
+	switch (algo) {
+	case '1':
+		print_linear_system_solution(num::GaussianElimination<double>(mat, vec));
+		break;
+	case '2':
+		print_linear_system_solution(num::LUDecomposition<double>(mat, vec));
+		break;
+	}
+
+	return 0;
+}
+
+void print_linear_system_solution(const num::LinearSolver<double>& solv)
+{
+	std::cout << "solution:\n" << solv.solution() << std::endl;
 }

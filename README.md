@@ -1,7 +1,7 @@
-# Linear Algebra Algorithms
+# Numerical Analysis Algorithms
 
 Implementation of the following linear algebra algorithms: 
-* [gaussian elimination algorithm](https://en.wikipedia.org/wiki/Gaussian_elimination).
+* [gaussian elimination](https://en.wikipedia.org/wiki/Gaussian_elimination).
 * [LU decomposition](https://en.wikipedia.org/wiki/LU_decomposition).
 
 # Dependencies
