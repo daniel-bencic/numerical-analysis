@@ -4,7 +4,7 @@
 #include "matrix.hh"
 #include "direct-solvers.hh"
 
-bool read_matrix(num::Matrix<double> *mp);
+bool read_matrix(num::Matrix<double>& mat, const std::string& msg);
 void linear_algebra_mode();
 
 int main(int argc, char *argv[])
@@ -48,35 +48,34 @@ int main(int argc, char *argv[])
 	if (mode == 'l') {
 		std::cout << "LINEAR ALGEBRA MODE" << std::endl;
 		
-		num::Matrix<double> *mat = new num::Matrix<double>;
-		if (!read_matrix(mat)) {
+		num::Matrix<double> mat;
+		if (!read_matrix(mat, "reading matrix (a00, a01[, ...];a10, a11[, ...][; ...]):")) {
 			std::cout << "error reading matrix." << std::endl;
 			return -1;
 		}
-		std::cout << *mat << std::endl;
-		delete mat;
+		std::cout << mat << std::endl;
+
+		num::Matrix<double> vec;
+		if (!read_matrix(vec, "reading vector (a0; a1;[ ...;]:")) {
+			std::cout << "error reading vector." << std::endl;
+		}
+		std::cout << vec << std::endl;
+
+		num::LUDecomposition<double> lu(mat, vec);
+		std::cout << lu.solution() << std::endl;
 	} else if (mode == 't') {
 		std::cout << "TEST MODE (dev only)" << std::endl;
-		num::GaussianElimination<double> ge{ };
-		std::vector<double> res = ge.solution();
-		std::cout << res.size() << std::endl;
+		num::GaussianElimination<double> ge;
+		num::Matrix<double> res = ge.solution();
+		std::cout << res.cols() << std::endl;
 	}
 	
 	return 0;
 }
 
-bool read_matrix(num::Matrix<double> *mp)
+bool read_matrix(num::Matrix<double>& mat, const std::string& msg)
 {
-	std::cout << "matrix dimensions:" << std::endl;
-	unsigned rows = 0, cols = 0;
-	std::cout << "rows: ";
-	std::cin >> rows;
-	std::cout << "cols: ";
-	std::cin >> cols;
-
-	*mp = num::Matrix<double>{ rows, cols };
-	
-	std::cout << "reading matrix (a00, a01[, ...];a10, a11[, ...][; ...]):" << std::endl;
+	std::cout << msg << std::endl;
 	std::string str;
 	std::cin >> str;
 	
@@ -84,26 +83,17 @@ bool read_matrix(num::Matrix<double> *mp)
 	std::regex col_regex{ "[\\d.]+(?=,|;)" };
 
 	std::sregex_iterator row_begin{ str.begin(), str.end(), row_regex };
-	std::sregex_iterator row_end{ };
-	
-	unsigned row_count = 0;
+	std::sregex_iterator row_end;
 	for (std::sregex_iterator row_it = row_begin; row_it != row_end; ++row_it) {
-		if (row_count == rows) return false;
+		std::string row_str = row_it->str();
 
-		std::string row = row_it->str();
-		
-		std::sregex_iterator col_begin{ row.begin(), row.end(), col_regex };
-
-		unsigned col_count = 0;
+		std::vector<double> row;
+		std::sregex_iterator col_begin{ row_str.begin(), row_str.end(), col_regex };
 		for (std::sregex_iterator col_it = col_begin; col_it != row_end; ++col_it) {
-			if (col_count == cols) return false;
-
-			(*mp)(row_count, col_count) = std::stod(col_it->str());
-
-			col_count++;
+			row.push_back(std::stod(col_it->str()));
 		}
 
-		row_count++;
+		mat.append_row(row);
 	}
 	
 	return true;

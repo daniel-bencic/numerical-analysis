@@ -10,7 +10,7 @@ namespace num {
 	template<typename T>
 	class Matrix {
 	public:
-		Matrix() = default;
+		Matrix();
 		Matrix(const unsigned rows, const unsigned cols);
 		T operator()(const unsigned row, const unsigned col) const;
 		T& operator()(const unsigned row, const unsigned col);
@@ -20,11 +20,20 @@ namespace num {
 		unsigned cols() const;
 		void transpose();
 		void concat(const Matrix<T>& a);
+		void append_row(const std::vector<double>& row);
+		void append_col(const std::vector<double>& col);
 
 	private:
 		unsigned _rows, _cols;
 		std::vector<std::vector<T>> _data;
 	};
+
+	template<typename T>
+	Matrix<T>::Matrix()
+	{
+		_rows = 0;
+		_cols = 0;
+	}
 	
 	template<typename T>
 	Matrix<T>::Matrix(const unsigned rows, const unsigned cols)
@@ -112,6 +121,33 @@ namespace num {
 			}		      
 		}
 		_cols += a.cols();
+	}
+
+	template<typename T>
+	void Matrix<T>::append_row(const std::vector<double>& row)
+	{
+		if (_cols == 0) _cols = row.size();
+		
+		assert(row.size() == _cols);
+
+		_data.push_back(row);
+		_rows++;
+	}
+
+	template<typename T>
+	void Matrix<T>::append_col(const std::vector<double>& col)
+	{
+		if (_rows == 0) {
+			_rows = col.size();
+			_data.resize(col.size());
+		} 
+		
+		assert(col.size() == _rows);
+
+		for (int i = 0; i < col.size(); i++) {
+			_data[i].push_back(col[i]);
+		}
+		_cols++;
 	}
 
 	template<typename T>
