@@ -9,15 +9,15 @@ namespace num {
 	class GaussianElimination : public LinearSolver<T> {
 	public:
 		GaussianElimination() = default;
-		GaussianElimination(Matrix<T> a, Matrix<T> x);
+		GaussianElimination(Matrix<T> a, Matrix<T> b);
 
 	private:
 		void compute() override;
 	};
 
 	template<typename T>
-	GaussianElimination<T>::GaussianElimination(Matrix<T> a, Matrix<T> x)
-		: LinearSolver<T>(a, x)
+	GaussianElimination<T>::GaussianElimination(Matrix<T> a, Matrix<T> b)
+		: LinearSolver<T>(a, b)
 	{
 		compute();
 	}
@@ -25,7 +25,7 @@ namespace num {
 	template<typename T>
 	void GaussianElimination<T>::compute()
 	{
-		Matrix<T> aug = concat_matrices(this->_a, this->_x);
+		Matrix<T> aug = concat_matrices(this->_a, this->_b);
 		for(int i = 0; i < aug.cols() - 1; i++) {
                         for(int j = i + 1; j < aug.rows(); j++) {
                                 double mult = -(aug(j, i) / aug(i, i));
@@ -35,14 +35,14 @@ namespace num {
                         }
                 }
     
-		this->_solution = this->back_substitution(aug);
+		this->_x = this->back_substitution(aug);
 	}
 
 	template<typename T>
 	class LUDecomposition : public LinearSolver<T> {
 	public:
 		LUDecomposition() = default;
-		LUDecomposition(Matrix<T> a, Matrix<T> x);
+		LUDecomposition(Matrix<T> a, Matrix<T> b);
 		Matrix<T> l() const;
 		Matrix<T> r() const;
 
@@ -53,8 +53,8 @@ namespace num {
 	};
 
 	template<typename T>
-	LUDecomposition<T>::LUDecomposition(Matrix<T> a, Matrix<T> x)
-		: LinearSolver<T>(a, x)
+	LUDecomposition<T>::LUDecomposition(Matrix<T> a, Matrix<T> b)
+		: LinearSolver<T>(a, b)
 	{
 		compute();
 	}
@@ -86,8 +86,8 @@ namespace num {
                         }
                 }
 
-		Matrix<T> res_y = this->forward_substitution(concat_matrices(_l, this->_x));
-		this->_solution = this->back_substitution(concat_matrices(_r, res_y));
+		Matrix<T> res_y = this->forward_substitution(concat_matrices(_l, this->_b));
+		this->_x = this->back_substitution(concat_matrices(_r, res_y));
 	}
 }
 

@@ -3,6 +3,7 @@
 #include <regex>
 #include "matrix.hh"
 #include "direct-solvers.hh"
+#include "iterative-solvers.hh"
 
 bool read_matrix(num::Matrix<double>& mat, const std::string& msg);
 int linear_algebra_mode(char algo);
@@ -24,6 +25,8 @@ int main(int argc, char *argv[])
 	       			break;
 			case '1':
 			case '2':
+			case '3':
+			case '4':
 				algorithm = c;
 				break;
 			default:
@@ -46,9 +49,10 @@ int main(int argc, char *argv[])
 			  << "        -l: linear algebra module\n"
 			  << "                -1 gaussian elimination\n"
 			  << "                -2 LU decomposition\n"
+			  << "                -3 jacobi method\n"
+			  << "                -4 gauss-seidel method\n"
 			  << "        -t: TODO"
 			  << std::endl;
-
 		return 0;
 	}
 
@@ -56,9 +60,19 @@ int main(int argc, char *argv[])
 		return linear_algebra_mode(algorithm);
 	} else if (mode == 't') {
 		std::cout << "TEST MODE (dev only)" << std::endl;
-		num::GaussianElimination<double> ge;
-		num::Matrix<double> res = ge.solution();
-		std::cout << res.cols() << std::endl;
+		num::Matrix<double> mat1;
+		if (!read_matrix(mat1, "reading matrix (a00, a01[, ...];a10, a11[, ...][; ...]):")) {
+			std::cout << "error reading matrix." << std::endl;
+			return -1;
+		}
+	
+		num::Matrix<double> mat2;
+		if (!read_matrix(mat2, "reading matrix (a00, a01[, ...];a10, a11[, ...][; ...]):")) {
+			std::cout << "error reading matrix." << std::endl;
+			return -1;
+		}
+		
+		std::cout << mat1 * mat2 << std::endl;
 	}
 	
 	return 0;
@@ -71,7 +85,7 @@ bool read_matrix(num::Matrix<double>& mat, const std::string& msg)
 	std::cin >> str;
 	
 	std::regex row_regex{ ".+?;" };
-	std::regex col_regex{ "[\\d.]+(?=,|;)" };
+	std::regex col_regex{ "-?\\d+[.]?\\d*(?=,|;)" };
 
 	std::sregex_iterator row_begin{ str.begin(), str.end(), row_regex };
 	std::sregex_iterator row_end;
@@ -113,6 +127,12 @@ int linear_algebra_mode(char algo)
 	case '2':
 		print_linear_system_solution(num::LUDecomposition<double>(mat, vec));
 		break;
+	case '3':
+		print_linear_system_solution(num::JacobiMethod<double>(mat, vec, 1e-9, 100));
+		break;
+	case '4':
+		print_linear_system_solution(num::GaussSeidelMethod<double>(mat, vec, 1e-9, 100));
+		break;
 	}
 
 	return 0;
@@ -120,5 +140,5 @@ int linear_algebra_mode(char algo)
 
 void print_linear_system_solution(const num::LinearSolver<double>& solv)
 {
-	std::cout << "solution:\n" << solv.solution() << std::endl;
+	std::cout << "solution:\n" << solv.x() << std::endl;
 }

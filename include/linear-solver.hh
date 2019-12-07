@@ -10,27 +10,27 @@ namespace num {
 	class LinearSolver : public Solver {
 	public:
 		LinearSolver() = default;
-		LinearSolver(Matrix<T> a, Matrix<T> x);
-		Matrix<T> solution() const;
+		LinearSolver(Matrix<T> a, Matrix<T> b);
+		Matrix<T> x() const;
 
 	protected:
 		Matrix<T> back_substitution(const Matrix<T>& aug) const;
 		Matrix<T> forward_substitution(const Matrix<T>& aug) const;
 		
-		Matrix<T> _a, _x, _solution;
+		Matrix<T> _a, _b, _x;
 	};
 
 	template<typename T>
-	LinearSolver<T>::LinearSolver(Matrix<T> a, Matrix<T> x)
+	LinearSolver<T>::LinearSolver(Matrix<T> a, Matrix<T> b)
 	{
 		_a = a;
-		_x = x;
+		_b = b;
 	}
 
 	template<typename T>
-	Matrix<T> LinearSolver<T>::solution() const
+	Matrix<T> LinearSolver<T>::x() const
 	{
-		return _solution;
+		return _x;
 	}
 
 	template<typename T>

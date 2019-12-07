@@ -5,6 +5,7 @@
 #include <vector>
 #include <iostream>
 #include <iomanip>
+#include <cmath>
 
 namespace num {
 	template<typename T>
@@ -183,6 +184,23 @@ namespace num {
 	}
 
 	template<typename T>
+	Matrix<T> operator*(const Matrix<T>& a, const Matrix<T>& b)
+	{
+		assert(a.cols() == b.rows());
+		
+		Matrix<T> m(a.rows(), b.cols());
+		for (int i = 0; i < m.rows(); i++) {
+			for (int j = 0; j < m.cols(); j++) {
+				for (int k = 0; k < a.cols(); k++) {
+					m(i, j) += a(i, k) * b(k, j); 
+				}
+			}
+		}
+
+		return m;
+	}
+
+	template<typename T>
 	std::ostream& operator<<(std::ostream& os, const Matrix<T>& a)
 	{
 		std::ios::fmtflags flags = os.flags();
@@ -228,6 +246,19 @@ namespace num {
 		}
 
 		return m;
+	}
+
+	template<typename T>
+	T norm_2(const Matrix<T>& v)
+	{
+		assert(v.cols() == 1);
+
+		T sum = 0;
+		for (int i = 0; i < v.rows(); i++) {
+			sum += v(i, 0) * v(i, 0);
+		}
+
+		return std::sqrt(sum);
 	}
 }
 
