@@ -1,8 +1,10 @@
 # Numerical Analysis Algorithms
 
 Implementation of the following linear algebra algorithms: 
-* [gaussian elimination](https://en.wikipedia.org/wiki/Gaussian_elimination).
+* [Gaussian elimination](https://en.wikipedia.org/wiki/Gaussian_elimination).
 * [LU decomposition](https://en.wikipedia.org/wiki/LU_decomposition).
+* [Jacobi method](https://en.wikipedia.org/wiki/Jacobi_method).
+* [Gauss-Seidel method](https://en.wikipedia.org/wiki/Gauss%E2%80%93Seidel_method).
 
 # Dependencies
 * none
