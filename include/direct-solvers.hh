@@ -6,7 +6,66 @@
 
 namespace num {
 	template<typename T>
-	class GaussianElimination : public LinearSolver<T> {
+	class DirectSolver : public LinearSolver<T> {
+	public:
+		DirectSolver() = default;
+		DirectSolver(Matrix<T> a, Matrix<T> b);
+	protected:
+		Matrix<T> back_substitution(const Matrix<T>& aug) const;
+		Matrix<T> forward_substitution(const Matrix<T>& aug) const;
+	};
+
+	template<typename T>
+	DirectSolver<T>::DirectSolver(Matrix<T> a, Matrix<T> b)
+		: LinearSolver<T>(a, b)
+	{
+		
+	}
+
+	template<typename T>
+	Matrix<T> DirectSolver<T>::back_substitution(const Matrix<T>& aug) const
+	{
+		std::vector<double> res;
+		res.resize(aug.rows());
+		double r;
+		for(int i = aug.rows() - 1; i > -1; i--) {
+			r = aug(i, aug.cols() - 1);
+			for(int j = i + 1; j < aug.cols() - 1; j++) {
+				r -= aug(i, j) * res[j];
+			}
+
+			res[i] = r / aug(i, i);
+		}		
+				
+		Matrix<T> m_res;
+		m_res.append_col(res);
+
+		return m_res;
+	}
+
+	template<typename T>
+	Matrix<T> DirectSolver<T>::forward_substitution(const Matrix<T>& aug) const
+	{
+		std::vector<double> res;
+                res.resize(aug.rows());
+                double r;
+                for(int i = 0; i < aug.rows(); i++) {
+                	r = aug(i, aug.cols() - 1);
+                        for(int j = i - 1; j > -1; j--) {
+                        	r -= aug(i, j) * res[j];
+                        }
+                        
+			res[i] = r / aug(i, i);
+                }
+                
+		Matrix<T> m_res;
+		m_res.append_col(res);
+
+		return m_res;
+	}
+	
+	template<typename T>
+	class GaussianElimination : public DirectSolver<T> {
 	public:
 		GaussianElimination() = default;
 		GaussianElimination(Matrix<T> a, Matrix<T> b);
@@ -17,7 +76,7 @@ namespace num {
 
 	template<typename T>
 	GaussianElimination<T>::GaussianElimination(Matrix<T> a, Matrix<T> b)
-		: LinearSolver<T>(a, b)
+		: DirectSolver<T>(a, b)
 	{
 		compute();
 	}
@@ -39,7 +98,7 @@ namespace num {
 	}
 
 	template<typename T>
-	class LUDecomposition : public LinearSolver<T> {
+	class LUDecomposition : public DirectSolver<T> {
 	public:
 		LUDecomposition() = default;
 		LUDecomposition(Matrix<T> a, Matrix<T> b);
@@ -54,7 +113,7 @@ namespace num {
 
 	template<typename T>
 	LUDecomposition<T>::LUDecomposition(Matrix<T> a, Matrix<T> b)
-		: LinearSolver<T>(a, b)
+		: DirectSolver<T>(a, b)
 	{
 		compute();
 	}
