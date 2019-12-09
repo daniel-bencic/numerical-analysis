@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
 			case '2':
 			case '3':
 			case '4':
+			case '5':
 				algorithm = c;
 				break;
 			default:
@@ -51,6 +52,7 @@ int main(int argc, char *argv[])
 			  << "                -2 LU decomposition\n"
 			  << "                -3 jacobi method\n"
 			  << "                -4 gauss-seidel method\n"
+			  << "                -5 successive over-relaxation\n"
 			  << "        -t: TODO"
 			  << std::endl;
 		return 0;
@@ -132,6 +134,9 @@ int linear_algebra_mode(char algo)
 		break;
 	case '4':
 		print_linear_system_solution(num::GaussSeidelMethod<double>(mat, vec, 1e-9, 100));
+		break;
+	case '5':
+		print_linear_system_solution(num::SOR<double>(mat, vec, 1e-9, 100, 1.1));
 		break;
 	}
 

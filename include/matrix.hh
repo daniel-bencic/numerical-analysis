@@ -42,7 +42,7 @@ namespace num {
 		_rows = rows;
 		_cols = cols;
 		_data.resize(rows);
-		for (int i = 0; i < rows; i++) {
+		for (std::size_t i = 0; i < rows; i++) {
 			_data[i].resize(cols);
 		}
 	}
@@ -98,9 +98,9 @@ namespace num {
 	{
 		std::vector<std::vector<T>> data;
 		data.resize(_cols);
-		for (int i = 0; i < _cols; i++) {
+		for (std::size_t i = 0; i < _cols; i++) {
 			data[i].resize(_rows);
-			for (int j = 0; j < _rows; j++) {
+			for (std::size_t j = 0; j < _rows; j++) {
 				data[i][j] = _data[j][i];
 			}
 		}
@@ -115,9 +115,9 @@ namespace num {
 	{
 		assert(_rows == a.rows());
 		
-		for (int i = 0; i < _rows; i++) {
+		for (std::size_t i = 0; i < _rows; i++) {
 			_data[i].reserve(_cols + a.cols());
-			for (int j = 0; j < a.cols(); j++) {
+			for (std::size_t j = 0; j < a.cols(); j++) {
 				_data[i].push_back(a(i, j));
 			}		      
 		}
@@ -145,7 +145,7 @@ namespace num {
 		
 		assert(col.size() == _rows);
 
-		for (int i = 0; i < col.size(); i++) {
+		for (std::size_t i = 0; i < col.size(); i++) {
 			_data[i].push_back(col[i]);
 		}
 		_cols++;
@@ -158,8 +158,8 @@ namespace num {
 		assert(a.cols() == b.cols());
 		
 		Matrix<T> m = a;
-		for (int i = 0; i < a.rows(); i++) {
-			for (int j = 0; j < a.cols(); j++) {
+		for (std::size_t i = 0; i < a.rows(); i++) {
+			for (std::size_t j = 0; j < a.cols(); j++) {
 				m(i, j) += b(i, j);
 			}
 		}
@@ -174,8 +174,8 @@ namespace num {
 		assert(a.cols() == b.cols());
 		
 		Matrix<T> m = a;
-		for (int i = 0; i < a.rows(); i++) {
-			for (int j = 0; j < a.cols(); j++) {
+		for (std::size_t i = 0; i < a.rows(); i++) {
+			for (std::size_t j = 0; j < a.cols(); j++) {
 				m(i, j) -= b(i, j);
 			}
 		}
@@ -189,9 +189,9 @@ namespace num {
 		assert(a.cols() == b.rows());
 		
 		Matrix<T> m(a.rows(), b.cols());
-		for (int i = 0; i < m.rows(); i++) {
-			for (int j = 0; j < m.cols(); j++) {
-				for (int k = 0; k < a.cols(); k++) {
+		for (std::size_t i = 0; i < m.rows(); i++) {
+			for (std::size_t j = 0; j < m.cols(); j++) {
+				for (std::size_t k = 0; k < a.cols(); k++) {
 					m(i, j) += a(i, k) * b(k, j); 
 				}
 			}
@@ -205,8 +205,8 @@ namespace num {
 	{
 		std::ios::fmtflags flags = os.flags();
 		os.setf(std::ios::left, std::ios::adjustfield);
-		for (int i = 0; i < a.rows(); i++) {
-			for (int j = 0; j < a.cols(); j++) {
+		for (std::size_t i = 0; i < a.rows(); i++) {
+			for (std::size_t j = 0; j < a.cols(); j++) {
 				os << std::setw(10) << a(i, j);
 			}
 			if (i == a.rows() - 1) break;
@@ -241,7 +241,7 @@ namespace num {
 		assert(rows == cols);
 		
 		Matrix<T> m{ rows, cols };
-		for (int i = 0; i < cols; i++) {
+		for (std::size_t i = 0; i < cols; i++) {
 			m(i, i) = static_cast<T>(1);
 		}
 
@@ -254,7 +254,7 @@ namespace num {
 		assert(v.cols() == 1);
 
 		T sum = 0;
-		for (int i = 0; i < v.rows(); i++) {
+		for (std::size_t i = 0; i < v.rows(); i++) {
 			sum += v(i, 0) * v(i, 0);
 		}
 

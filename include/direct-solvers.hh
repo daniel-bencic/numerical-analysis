@@ -18,9 +18,7 @@ namespace num {
 	template<typename T>
 	DirectSolver<T>::DirectSolver(Matrix<T> a, Matrix<T> b)
 		: LinearSolver<T>(a, b)
-	{
-		
-	}
+	{ }
 
 	template<typename T>
 	Matrix<T> DirectSolver<T>::back_substitution(const Matrix<T>& aug) const
@@ -28,9 +26,9 @@ namespace num {
 		std::vector<double> res;
 		res.resize(aug.rows());
 		double r;
-		for(int i = aug.rows() - 1; i > -1; i--) {
+		for(std::size_t i = aug.rows() - 1; i > -1; i--) {
 			r = aug(i, aug.cols() - 1);
-			for(int j = i + 1; j < aug.cols() - 1; j++) {
+			for(std::size_t j = i + 1; j < aug.cols() - 1; j++) {
 				r -= aug(i, j) * res[j];
 			}
 
@@ -49,9 +47,9 @@ namespace num {
 		std::vector<double> res;
                 res.resize(aug.rows());
                 double r;
-                for(int i = 0; i < aug.rows(); i++) {
+                for(std::size_t i = 0; i < aug.rows(); i++) {
                 	r = aug(i, aug.cols() - 1);
-                        for(int j = i - 1; j > -1; j--) {
+                        for(std::size_t j = i - 1; j > -1; j--) {
                         	r -= aug(i, j) * res[j];
                         }
                         
@@ -85,10 +83,10 @@ namespace num {
 	void GaussianElimination<T>::compute()
 	{
 		Matrix<T> aug = concat_matrices(this->_a, this->_b);
-		for(int i = 0; i < aug.cols() - 1; i++) {
-                        for(int j = i + 1; j < aug.rows(); j++) {
+		for(std::size_t i = 0; i < aug.cols() - 1; i++) {
+                        for(std::size_t j = i + 1; j < aug.rows(); j++) {
                                 double mult = -(aug(j, i) / aug(i, i));
-                                for(int k = i; k < aug.cols(); k++) {
+                                for(std::size_t k = i; k < aug.cols(); k++) {
                                         aug(j, k) = aug(j, k) + aug(i, k) * mult;
                                 }
                         }
@@ -135,11 +133,11 @@ namespace num {
 	{
 		_l = create_identity_matrix<T>(this->_a.rows(), this->_a.cols());
 		_r = this->_a;
-                for(int i = 0; i < _r.cols() - 1; i++) {
-                        for(int j = i + 1; j < _r.rows(); j++) {
+                for(std::size_t i = 0; i < _r.cols() - 1; i++) {
+                        for(std::size_t j = i + 1; j < _r.rows(); j++) {
                                 _l(j, i) = _r(j,i) / _r(i, i);
 
-                                for(int k = i; k < _r.cols(); k++) {
+                                for(std::size_t k = i; k < _r.cols(); k++) {
                                         _r(j, k) = _r(j, k) - _r(i, k) * _l(j, i);
                                 }
                         }

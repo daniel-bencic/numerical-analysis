@@ -8,22 +8,22 @@ namespace num {
 	class IterativeSolver : public LinearSolver<T> {
 	public:
 		IterativeSolver();
-		IterativeSolver(Matrix<T> a, Matrix<T> b, T tolerance, int max_iterations);
+		IterativeSolver(Matrix<T> a, Matrix<T> b, double tolerance, int max_iterations);
 		
 	protected:
-		T _tol;
+		double _tol;
 		int _its;
 	};
 
 	template<typename T>
 	IterativeSolver<T>::IterativeSolver()
 	{
-		_tol = static_cast<T>(0);
+		_tol = 0.0;
 		_its = 0;
 	}
 
 	template<typename T>
-	IterativeSolver<T>::IterativeSolver(Matrix<T>a, Matrix<T>b, T tolerance, int max_iterations)
+	IterativeSolver<T>::IterativeSolver(Matrix<T>a, Matrix<T>b, double tolerance, int max_iterations)
 		: LinearSolver<T>(a, b)
 	{
 		_tol = tolerance;
@@ -34,14 +34,14 @@ namespace num {
 	class JacobiMethod : public IterativeSolver<T> {
 	public:
 		JacobiMethod() = default;
-		JacobiMethod(Matrix<T> a, Matrix<T> b, T tolerance, int max_iterations);
+		JacobiMethod(Matrix<T> a, Matrix<T> b, double tolerance, int max_iterations);
 
 	private:
 		void compute() override;
 	};
 
 	template<typename T>
-	JacobiMethod<T>::JacobiMethod(Matrix<T> a, Matrix<T> b, T tolerance, int max_iterations)
+	JacobiMethod<T>::JacobiMethod(Matrix<T> a, Matrix<T> b, double tolerance, int max_iterations)
 		: IterativeSolver<T>(a, b, tolerance, max_iterations)
 	{
 		compute();
@@ -54,28 +54,29 @@ namespace num {
 		int i = 0;
 		while (i++ < this->_its && norm_2(this->_b - this->_a * this->_x) > this->_tol) {
 			Matrix<T> x = this->_x;
-			for (int j = 0; j < this->_x.rows(); j++) {
+			for (std::size_t j = 0; j < this->_x.rows(); j++) {
 				T sum = 0;
-				for (int k = 0; k < this->_a.cols(); k++) {
+				for (std::size_t k = 0; k < this->_a.cols(); k++) {
 					if (j != k) sum += this->_a(j, k) * x(k, 0);
 				}
 				this->_x(j, 0) = (this->_b(j, 0) - sum) / this->_a(j, j);
 			}
 		}
+		std::cout << "iterations: " << i - 1 << std::endl;
 	}
 
 	template<typename T>
 	class GaussSeidelMethod : public IterativeSolver<T> {
 	public:
 		GaussSeidelMethod() = default;
-		GaussSeidelMethod(Matrix<T> a, Matrix<T> b, T tolerance, int max_iterations);
+		GaussSeidelMethod(Matrix<T> a, Matrix<T> b, double tolerance, int max_iterations);
 
 	private:
 		void compute() override;
 	};
 
 	template<typename T>
-	GaussSeidelMethod<T>::GaussSeidelMethod(Matrix<T> a, Matrix<T> b, T tolerance, int max_iterations)
+	GaussSeidelMethod<T>::GaussSeidelMethod(Matrix<T> a, Matrix<T> b, double tolerance, int max_iterations)
 		: IterativeSolver<T>(a, b, tolerance, max_iterations)
 	{
 		compute();
@@ -87,14 +88,60 @@ namespace num {
 		this->_x = Matrix<T>(this->_a.rows(), 1);
 		int i = 0;
 		while (i++ < this->_its && norm_2(this->_b - this->_a * this->_x) > this->_tol) {
-			for (int j = 0; j < this->_x.rows(); j++) {
+			for (std::size_t j = 0; j < this->_x.rows(); j++) {
 				T sum = 0;
-				for (int k = 0; k < this->_a.cols(); k++) {
+				for (std::size_t k = 0; k < this->_a.cols(); k++) {
 					if (j != k) sum += this->_a(j, k) * this->_x(k, 0);
 				}
 				this->_x(j, 0) = (this->_b(j, 0) - sum) / this->_a(j, j);
 			}	
 		}
+		std::cout << "iterations: " << i - 1 << std::endl;
+	}
+
+	template<typename T>
+	class SOR : public IterativeSolver<T> {
+	public:
+		SOR();
+		SOR(Matrix<T> a, Matrix<T> b, double tolerance, int max_iterations, double relaxation);
+
+	private:
+		void compute() override;
+
+		double _rlx;
+	};
+
+	template<typename T>
+	SOR<T>::SOR() {
+		_rlx = 1.0;
+	}
+
+	template<typename T>
+	SOR<T>::SOR(Matrix<T> a, Matrix<T> b, double tolerance, int max_iterations, double relaxation)
+		: IterativeSolver<T>(a, b, tolerance, max_iterations)
+	{
+		assert(relaxation >= 0 && relaxation <= 2);
+			
+		_rlx = relaxation;
+
+		compute();
+	}
+
+	template<typename T>
+	void SOR<T>::compute()
+	{
+		this->_x = Matrix<T>(this->_a.rows(), 1);
+		int i = 0;
+		while (i++ < this->_its && norm_2(this->_b - this->_a * this->_x) > this->_tol) {
+			for (std::size_t j = 0; j < this->_x.rows(); j++) {
+				T sum = 0;
+				for (std::size_t k = 0; k < this->_a.cols(); k++) {
+					if (j != k) sum += this->_a(j, k) * this->_x(k, 0);
+				}
+				this->_x(j, 0) = this->_x(j, 0) + _rlx * (((this->_b(j, 0) - sum) / this->_a(j, j)) - this->_x(j, 0));
+			}	
+		}
+		std::cout << "iterations: " << i - 1 << std::endl;
 	}
 }
 
