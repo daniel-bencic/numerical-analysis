@@ -2,36 +2,11 @@
 #define ITERATIVE_SOLVERS_HH
 
 #include "linear-solver.hh"
+#include "iterative-method.hh"
 
 namespace num {
 	template<typename T>
-	class IterativeSolver : public LinearSolver<T> {
-	public:
-		IterativeSolver();
-		IterativeSolver(Matrix<T> a, Matrix<T> b, double tolerance, int max_iterations);
-		
-	protected:
-		double _tol;
-		int _its;
-	};
-
-	template<typename T>
-	IterativeSolver<T>::IterativeSolver()
-	{
-		_tol = 0.0;
-		_its = 0;
-	}
-
-	template<typename T>
-	IterativeSolver<T>::IterativeSolver(Matrix<T>a, Matrix<T>b, double tolerance, int max_iterations)
-		: LinearSolver<T>(a, b)
-	{
-		_tol = tolerance;
-		_its = max_iterations;
-	}
-	
-	template<typename T>
-	class JacobiMethod : public IterativeSolver<T> {
+	class JacobiMethod : public LinearSolver<T>, public IterativeMethod<T> {
 	public:
 		JacobiMethod() = default;
 		JacobiMethod(Matrix<T> a, Matrix<T> b, double tolerance, int max_iterations);
@@ -42,7 +17,7 @@ namespace num {
 
 	template<typename T>
 	JacobiMethod<T>::JacobiMethod(Matrix<T> a, Matrix<T> b, double tolerance, int max_iterations)
-		: IterativeSolver<T>(a, b, tolerance, max_iterations)
+		: LinearSolver<T>(a, b), IterativeMethod<T>(tolerance, max_iterations)
 	{
 		compute();
 	}
@@ -66,7 +41,7 @@ namespace num {
 	}
 
 	template<typename T>
-	class GaussSeidelMethod : public IterativeSolver<T> {
+	class GaussSeidelMethod : public LinearSolver<T>, public IterativeMethod<T> {
 	public:
 		GaussSeidelMethod() = default;
 		GaussSeidelMethod(Matrix<T> a, Matrix<T> b, double tolerance, int max_iterations);
@@ -77,7 +52,7 @@ namespace num {
 
 	template<typename T>
 	GaussSeidelMethod<T>::GaussSeidelMethod(Matrix<T> a, Matrix<T> b, double tolerance, int max_iterations)
-		: IterativeSolver<T>(a, b, tolerance, max_iterations)
+		: LinearSolver<T>(a, b), IterativeMethod<T>(tolerance, max_iterations)
 	{
 		compute();
 	}
@@ -100,11 +75,11 @@ namespace num {
 	}
 
 	template<typename T>
-	class SOR : public IterativeSolver<T> {
+	class SOR : public LinearSolver<T>, public IterativeMethod<T> {
 	public:
 		SOR();
 		SOR(Matrix<T> a, Matrix<T> b, double tolerance, int max_iterations, double relaxation);
-
+	
 	private:
 		void compute() override;
 
@@ -112,13 +87,13 @@ namespace num {
 	};
 
 	template<typename T>
-	SOR<T>::SOR() {
-		_rlx = 1.0;
-	}
+	SOR<T>::SOR()
+		: _rlx(1.0)
+	{ }
 
 	template<typename T>
 	SOR<T>::SOR(Matrix<T> a, Matrix<T> b, double tolerance, int max_iterations, double relaxation)
-		: IterativeSolver<T>(a, b, tolerance, max_iterations)
+		: LinearSolver<T>(a, b), IterativeMethod<T>(tolerance, max_iterations)
 	{
 		assert(relaxation >= 0 && relaxation <= 2);
 			

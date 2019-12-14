@@ -1,12 +1,16 @@
 #include <iostream>
 #include <string>
 #include <regex>
+#include <cmath>
 #include "matrix.hh"
-#include "direct-solvers.hh"
-#include "iterative-solvers.hh"
+#include "linear-direct-solvers.hh"
+#include "linear-iterative-solvers.hh"
+#include "num-differ.hh"
 
 bool read_matrix(num::Matrix<double>& mat, const std::string& msg);
 int linear_algebra_mode(char algo);
+int numerical_differentiation_mode(char algo);
+int root_finding_mode(char algo);
 void print_linear_system_solution(const num::LinearSolver<double>& solv);
 
 int main(int argc, char *argv[])
@@ -17,6 +21,8 @@ int main(int argc, char *argv[])
 		while (c = *++argv[0]) {
 			switch (c) {
 			case 'l':
+			case 'd':
+			case 'r':
 			case 't':
 				mode = c;
 				break;
@@ -53,6 +59,10 @@ int main(int argc, char *argv[])
 			  << "                -3 jacobi method\n"
 			  << "                -4 gauss-seidel method\n"
 			  << "                -5 successive over-relaxation\n"
+			  << "        -d: numerical differentiation module\n"
+			  << "                -1 first derivative\n"
+			  << "                -2 second derivative\n"
+			  << "        -r: root-finding module\n"
 			  << "        -t: TODO"
 			  << std::endl;
 		return 0;
@@ -60,6 +70,8 @@ int main(int argc, char *argv[])
 
 	if (mode == 'l') {
 		return linear_algebra_mode(algorithm);
+	} else if (mode == 'd') {
+		return numerical_differentiation_mode(algorithm); 
 	} else if (mode == 't') {
 		std::cout << "TEST MODE (dev only)" << std::endl;
 		num::Matrix<double> mat1;
@@ -140,6 +152,32 @@ int linear_algebra_mode(char algo)
 		break;
 	}
 
+	return 0;
+}
+
+int numerical_differentiation_mode(char algo)
+{
+	std::cout << "NUMERICAL DIFFERENTIATION MODE" << std::endl;
+
+	num::Matrix<double> vec;
+	if (!read_matrix(vec, "reading measurement vector (a0; a1;[ ...;]:")) {
+		std::cout << "error reading vector." << std::endl;
+		return -1;
+	}
+
+	double h = 0.0;
+	std::cout << "reading measure distance h: " << std::endl;
+	std::cin >> h;
+
+	num::NumDiffer<double> d = num::NumDiffer<double>(vec, h, std::stoi(std::string(1, algo)));
+	std::cout << "solution:\n" << d.derivated() << std::endl;
+
+	return 0;
+}
+
+int root_finding_mode(char algo)
+{
+	std::cout << "ROOT-FINDING MODE" << std::endl;
 	return 0;
 }
 

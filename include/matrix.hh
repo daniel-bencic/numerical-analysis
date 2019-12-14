@@ -31,16 +31,13 @@ namespace num {
 
 	template<typename T>
 	Matrix<T>::Matrix()
-	{
-		_rows = 0;
-		_cols = 0;
-	}
+		: _rows(0), _cols(0)
+	{ }
 	
 	template<typename T>
 	Matrix<T>::Matrix(const unsigned rows, const unsigned cols)
+		: _rows(rows), _cols(cols)
 	{
-		_rows = rows;
-		_cols = cols;
 		_data.resize(rows);
 		for (std::size_t i = 0; i < rows; i++) {
 			_data[i].resize(cols);
@@ -194,6 +191,19 @@ namespace num {
 				for (std::size_t k = 0; k < a.cols(); k++) {
 					m(i, j) += a(i, k) * b(k, j); 
 				}
+			}
+		}
+
+		return m;
+	}
+
+	template<typename T>
+	Matrix<T> operator*(const Matrix<T>& a, const T c)
+	{		
+		Matrix<T> m(a.rows(), a.cols());
+		for (std::size_t i = 0; i < m.rows(); i++) {
+			for (std::size_t j = 0; j < m.cols(); j++) {
+				m(i, j) = a(i, j) * c;
 			}
 		}
 

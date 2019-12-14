@@ -5,6 +5,7 @@ Implementation of the following linear algebra algorithms:
 * [LU decomposition](https://en.wikipedia.org/wiki/LU_decomposition).
 * [Jacobi method](https://en.wikipedia.org/wiki/Jacobi_method).
 * [Gauss-Seidel method](https://en.wikipedia.org/wiki/Gauss%E2%80%93Seidel_method).
+* [Numerical differentiation](https://en.wikipedia.org/wiki/Numerical_differentiation).
 
 # Dependencies
 * none
@@ -19,3 +20,6 @@ Implementation of the following linear algebra algorithms:
 # Comments
 Works for: </br>
 <img src="https://latex.codecogs.com/svg.latex?\LARGE&space;A\in&space;\mathbb{R}^{NxN},&space;b\in&space;\mathbb{R}^{N}" title="\LARGE A\in \mathbb{R}^{NxN}, b\in \mathbb{R}^{N}" />
+
+# TODO
+* add math expression parser

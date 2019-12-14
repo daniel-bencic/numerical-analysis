@@ -22,10 +22,8 @@ namespace num {
 
 	template<typename T>
 	LinearSolver<T>::LinearSolver(Matrix<T> a, Matrix<T> b)
-	{
-		_a = a;
-		_b = b;
-	}
+		: _a(a), _b(b)
+	{ }
 
 	template<typename T>
 	Matrix<T> LinearSolver<T>::x() const
