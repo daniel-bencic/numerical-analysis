@@ -1,8 +1,5 @@
 #include <cmath>
 #include "newton-raphson.hh"
-#include <iostream>
-#include <limits>
-#include <iomanip>
 
 namespace num {
 	NewtonRaphson::NewtonRaphson()
