@@ -6,6 +6,7 @@ Implementation of the following linear algebra algorithms:
 * [Jacobi method](https://en.wikipedia.org/wiki/Jacobi_method).
 * [Gauss-Seidel method](https://en.wikipedia.org/wiki/Gauss%E2%80%93Seidel_method).
 * [Numerical differentiation](https://en.wikipedia.org/wiki/Numerical_differentiation).
+* [Newton-Raphson method](https://en.wikipedia.org/wiki/Newton%27s_method).
 
 # Dependencies
 * none
