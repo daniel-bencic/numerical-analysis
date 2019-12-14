@@ -8,7 +8,7 @@ namespace num {
 	class NewtonRaphson : public Solver, public IterativeMethod<double> {
 	public:
 		NewtonRaphson();
-		NewtonRaphson(double (*func)(double), double(*d_func)(double), double tolerance, int max_iterations);
+		NewtonRaphson(double (*func)(double), double(*d_func)(double), double start, double tolerance, int max_iterations);
 		double zero() const;
 
 	private:

@@ -2,10 +2,12 @@
 #include <string>
 #include <regex>
 #include <cmath>
+#include <limits>
 #include "matrix.hh"
 #include "linear-direct-solvers.hh"
 #include "linear-iterative-solvers.hh"
-#include "num-differ.hh"
+#include "numerical-differentiation.hh"
+#include "newton-raphson.hh"
 
 bool read_matrix(num::Matrix<double>& mat, const std::string& msg);
 int linear_algebra_mode(char algo);
@@ -72,6 +74,8 @@ int main(int argc, char *argv[])
 		return linear_algebra_mode(algorithm);
 	} else if (mode == 'd') {
 		return numerical_differentiation_mode(algorithm); 
+	} else if (mode == 'r') {
+		return root_finding_mode(algorithm);
 	} else if (mode == 't') {
 		std::cout << "TEST MODE (dev only)" << std::endl;
 		num::Matrix<double> mat1;
@@ -170,7 +174,7 @@ int numerical_differentiation_mode(char algo)
 	std::cin >> h;
 
 	num::NumDiffer<double> d = num::NumDiffer<double>(vec, h, std::stoi(std::string(1, algo)));
-	std::cout << "solution:\n" << d.derivated() << std::endl;
+	std::cout << "solution:\n" << std::setprecision(std::numeric_limits<double>::max_digits10) << d.derivated() << std::endl;
 
 	return 0;
 }
@@ -178,10 +182,21 @@ int numerical_differentiation_mode(char algo)
 int root_finding_mode(char algo)
 {
 	std::cout << "ROOT-FINDING MODE" << std::endl;
+
+	num::NewtonRaphson nr = num::NewtonRaphson(
+		[] (double x) -> double { return 2 * x * x * x - x * x - 6; },
+		[] (double x) -> double { return 6 * x * x - 2 * x; },
+		-1.0,
+		1e-9,
+		100
+		);
+
+	std::cout << "solution:\n" << std::setprecision(std::numeric_limits<double>::max_digits10) << nr.zero() << std::endl;
+	
 	return 0;
 }
 
 void print_linear_system_solution(const num::LinearSolver<double>& solv)
 {
-	std::cout << "solution:\n" << solv.x() << std::endl;
+	std::cout << "solution:\n" << std::setprecision(std::numeric_limits<double>::digits10) << solv.x() << std::endl;
 }

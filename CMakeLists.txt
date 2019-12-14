@@ -5,4 +5,5 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(include)
 
-add_executable(numerical-analysis src/main.cc)
+add_executable(numerical-analysis src/main.cc
+				  src/newton-raphson.cc)
