@@ -65,6 +65,8 @@ int main(int argc, char *argv[])
 			  << "                -1 first derivative\n"
 			  << "                -2 second derivative\n"
 			  << "        -r: root-finding module\n"
+			  << "                -1 univariate\n"
+			  << "                -2 multivariate\n"
 			  << "        -t: TODO"
 			  << std::endl;
 		return 0;

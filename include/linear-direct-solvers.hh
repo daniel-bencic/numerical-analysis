@@ -26,7 +26,7 @@ namespace num {
 		std::vector<double> res;
 		res.resize(aug.rows());
 		double r;
-		for(std::size_t i = aug.rows() - 1; i > -1; i--) {
+		for(std::size_t i = aug.rows(); i-- > 0; ) {
 			r = aug(i, aug.cols() - 1);
 			for(std::size_t j = i + 1; j < aug.cols() - 1; j++) {
 				r -= aug(i, j) * res[j];
@@ -49,7 +49,7 @@ namespace num {
                 double r;
                 for(std::size_t i = 0; i < aug.rows(); i++) {
                 	r = aug(i, aug.cols() - 1);
-                        for(std::size_t j = i - 1; j > -1; j--) {
+                        for(std::size_t j = i; j-- > 0; ) {
                         	r -= aug(i, j) * res[j];
                         }
                         
@@ -91,6 +91,8 @@ namespace num {
                                 }
                         }
                 }
+
+		std::cout << aug << std::endl;
     
 		this->_x = this->back_substitution(aug);
 	}
