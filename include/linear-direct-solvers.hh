@@ -91,9 +91,7 @@ namespace num {
                                 }
                         }
                 }
-
-		std::cout << aug << std::endl;
-    
+   
 		this->_x = this->back_substitution(aug);
 	}
 
