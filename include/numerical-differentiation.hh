@@ -10,23 +10,23 @@ namespace differ {
 	class NumDiffer : public Solver {
 	public:
 		NumDiffer();
-		NumDiffer(num::linalg::Matrix<T> vals, double h, int order);
+		NumDiffer(num::linalg::Matrix<T> vals, T h, int order);
 		num::linalg::Matrix<T> derivated() const;
 				
 	private:
 		void compute() override;
 		
-		double _h, _fac;
+		T _h, _fac;
 		num::linalg::Matrix<T> _coeff, _vals, _deriv;
 	};
 
 	template<typename T>
 	NumDiffer<T>::NumDiffer()
-		: _h(0.0), _fac(0.0)
+		: _h(static_cast<T>(0)), _fac(static_cast<T>(0))
 	{ }
 
 	template<typename T>
-	NumDiffer<T>::NumDiffer(num::linalg::Matrix<T> vals, double h, int order)
+	NumDiffer<T>::NumDiffer(num::linalg::Matrix<T> vals, T h, int order)
 		: _vals(vals), _h(h)
 	{
 		assert(vals.rows() >= 3);

@@ -10,14 +10,14 @@ namespace linalg {
 	class JacobiMethod : public LinearSolver<T>, public IterativeMethod<T> {
 	public:
 		JacobiMethod() = default;
-		JacobiMethod(Matrix<T> a, Matrix<T> b, double tolerance, int max_iterations);
+		JacobiMethod(Matrix<T> a, Matrix<T> b, T tolerance, int max_iterations);
 
 	private:
 		void compute() override;
 	};
 
 	template<typename T>
-	JacobiMethod<T>::JacobiMethod(Matrix<T> a, Matrix<T> b, double tolerance, int max_iterations)
+	JacobiMethod<T>::JacobiMethod(Matrix<T> a, Matrix<T> b, T tolerance, int max_iterations)
 		: LinearSolver<T>(a, b), IterativeMethod<T>(tolerance, max_iterations)
 	{
 		compute();
@@ -50,14 +50,14 @@ namespace linalg {
 	class GaussSeidelMethod : public LinearSolver<T>, public IterativeMethod<T> {
 	public:
 		GaussSeidelMethod() = default;
-		GaussSeidelMethod(Matrix<T> a, Matrix<T> b, double tolerance, int max_iterations);
+		GaussSeidelMethod(Matrix<T> a, Matrix<T> b, T tolerance, int max_iterations);
 
 	private:
 		void compute() override;
 	};
 
 	template<typename T>
-	GaussSeidelMethod<T>::GaussSeidelMethod(Matrix<T> a, Matrix<T> b, double tolerance, int max_iterations)
+	GaussSeidelMethod<T>::GaussSeidelMethod(Matrix<T> a, Matrix<T> b, T tolerance, int max_iterations)
 		: LinearSolver<T>(a, b), IterativeMethod<T>(tolerance, max_iterations)
 	{
 		compute();
@@ -89,21 +89,21 @@ namespace linalg {
 	class SOR : public LinearSolver<T>, public IterativeMethod<T> {
 	public:
 		SOR();
-		SOR(Matrix<T> a, Matrix<T> b, double tolerance, int max_iterations, double relaxation);
+		SOR(Matrix<T> a, Matrix<T> b, T tolerance, int max_iterations, T relaxation);
 	
 	private:
 		void compute() override;
 
-		double _rlx;
+		T _rlx;
 	};
 
 	template<typename T>
 	SOR<T>::SOR()
-		: _rlx(1.0)
+		: _rlx(static_cast<T>(1))
 	{ }
 
 	template<typename T>
-	SOR<T>::SOR(Matrix<T> a, Matrix<T> b, double tolerance, int max_iterations, double relaxation)
+	SOR<T>::SOR(Matrix<T> a, Matrix<T> b, T tolerance, int max_iterations, T relaxation)
 		: LinearSolver<T>(a, b), IterativeMethod<T>(tolerance, max_iterations)
 	{
 		assert(relaxation >= 0 && relaxation <= 2);

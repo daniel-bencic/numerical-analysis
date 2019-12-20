@@ -185,7 +185,7 @@ int root_finding_mode(char algo)
 {
 	std::cout << "ROOT-FINDING MODE" << std::endl;
 
-	num::root::NewtonRaphson nr = num::root::NewtonRaphson(
+	num::root::NewtonRaphson<double> nr = num::root::NewtonRaphson<double>(
 		[] (double x) -> double { return x * x * x - 2; },
 		[] (double x) -> double { return 3 * x * x; },
 		2.0,
