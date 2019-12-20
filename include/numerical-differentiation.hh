@@ -1,22 +1,23 @@
-#ifndef NUM_DIFF_HH
+#ifndef NUM_DIF_HH
 #define NUM_DIFF_HH
 
 #include "solver.hh"
 #include "matrix.hh"
 
 namespace num {
+namespace differ {
 	template<typename T>
 	class NumDiffer : public Solver {
 	public:
 		NumDiffer();
-		NumDiffer(Matrix<T> vals, double h, int order);
-		Matrix<T> derivated() const;
+		NumDiffer(num::linalg::Matrix<T> vals, double h, int order);
+		num::linalg::Matrix<T> derivated() const;
 				
 	private:
 		void compute() override;
 		
 		double _h, _fac;
-		Matrix<T> _coeff, _vals, _deriv;
+		num::linalg::Matrix<T> _coeff, _vals, _deriv;
 	};
 
 	template<typename T>
@@ -25,12 +26,12 @@ namespace num {
 	{ }
 
 	template<typename T>
-	NumDiffer<T>::NumDiffer(Matrix<T> vals, double h, int order)
+	NumDiffer<T>::NumDiffer(num::linalg::Matrix<T> vals, double h, int order)
 		: _vals(vals), _h(h)
 	{
 		assert(vals.rows() >= 3);
 
-		_coeff = Matrix<T>(vals.rows(), vals.rows());
+		_coeff = num::linalg::Matrix<T>(vals.rows(), vals.rows());
 		if (order == 1) {
 			_coeff(0, 1) = static_cast<T>(1);
 			_coeff(_coeff.rows() - 1, _coeff.cols() - 2) = static_cast<T>(-1);
@@ -60,7 +61,7 @@ namespace num {
 	}
 
 	template<typename T>
-	Matrix<T> NumDiffer<T>::derivated() const
+	num::linalg::Matrix<T> NumDiffer<T>::derivated() const
 	{
 		return _deriv;
 	}
@@ -71,5 +72,6 @@ namespace num {
 		_deriv =  _coeff * _vals * _fac;
 	}
 }
-
+}
+	
 #endif /* NUM_DIFF_HH */

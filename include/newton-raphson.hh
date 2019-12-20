@@ -5,7 +5,8 @@
 #include "iterative-method.hh"
 
 namespace num {
-	class NewtonRaphson : public Solver, public IterativeMethod<double> {
+namespace root {
+		class NewtonRaphson : public Solver, public IterativeMethod<double> {
 	public:
 		NewtonRaphson();
 		NewtonRaphson(double (*func)(double), double(*d_func)(double), double start, double tolerance, int max_iterations);
@@ -18,6 +19,7 @@ namespace num {
 		double (*_fn)(double);
 		double (*_d_fn)(double);
 	};
+}	
 }
 
 #endif /* NEWTON_RAPHSON_HH */

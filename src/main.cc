@@ -9,18 +9,18 @@
 #include "numerical-differentiation.hh"
 #include "newton-raphson.hh"
 
-bool read_matrix(num::Matrix<double>& mat, const std::string& msg);
+bool read_matrix(num::linalg::Matrix<double>& mat, const std::string& msg);
 int linear_algebra_mode(char algo);
 int numerical_differentiation_mode(char algo);
 int root_finding_mode(char algo);
-void print_linear_system_solution(const num::LinearSolver<double>& solv);
+void print_linear_system_solution(const num::linalg::LinearSolver<double>& solv);
 
 int main(int argc, char *argv[])
 {
 	bool help = false, unkown = false;
 	char c, mode, algorithm;
 	while (--argc > 0 &&  (*++argv)[0] == '-') {
-		while (c = *++argv[0]) {
+		while ((c = *++argv[0])) {
 			switch (c) {
 			case 'l':
 			case 'd':
@@ -80,13 +80,13 @@ int main(int argc, char *argv[])
 		return root_finding_mode(algorithm);
 	} else if (mode == 't') {
 		std::cout << "TEST MODE (dev only)" << std::endl;
-		num::Matrix<double> mat1;
+		num::linalg::Matrix<double> mat1;
 		if (!read_matrix(mat1, "reading matrix (a00, a01[, ...];a10, a11[, ...][; ...]):")) {
 			std::cout << "error reading matrix." << std::endl;
 			return -1;
 		}
 	
-		num::Matrix<double> mat2;
+		num::linalg::Matrix<double> mat2;
 		if (!read_matrix(mat2, "reading matrix (a00, a01[, ...];a10, a11[, ...][; ...]):")) {
 			std::cout << "error reading matrix." << std::endl;
 			return -1;
@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-bool read_matrix(num::Matrix<double>& mat, const std::string& msg)
+bool read_matrix(num::linalg::Matrix<double>& mat, const std::string& msg)
 {
 	std::cout << msg << std::endl;
 	std::string str;
@@ -128,13 +128,13 @@ int linear_algebra_mode(char algo)
 {
 	std::cout << "LINEAR ALGEBRA MODE" << std::endl;
 		
-	num::Matrix<double> mat;
+	num::linalg::Matrix<double> mat;
 	if (!read_matrix(mat, "reading matrix (a00, a01[, ...];a10, a11[, ...][; ...]):")) {
 		std::cout << "error reading matrix." << std::endl;
 		return -1;
 	}
 	
-	num::Matrix<double> vec;
+	num::linalg::Matrix<double> vec;
 	if (!read_matrix(vec, "reading vector (a0; a1;[ ...;]:")) {
 		std::cout << "error reading vector." << std::endl;
 		return -1;
@@ -142,19 +142,19 @@ int linear_algebra_mode(char algo)
 
 	switch (algo) {
 	case '1':
-		print_linear_system_solution(num::GaussianElimination<double>(mat, vec));
+		print_linear_system_solution(num::linalg::GaussianElimination<double>(mat, vec));
 		break;
 	case '2':
-		print_linear_system_solution(num::LUDecomposition<double>(mat, vec));
+		print_linear_system_solution(num::linalg::LUDecomposition<double>(mat, vec));
 		break;
 	case '3':
-		print_linear_system_solution(num::JacobiMethod<double>(mat, vec, 1e-9, 100));
+		print_linear_system_solution(num::linalg::JacobiMethod<double>(mat, vec, 1e-9, 100));
 		break;
 	case '4':
-		print_linear_system_solution(num::GaussSeidelMethod<double>(mat, vec, 1e-9, 100));
+		print_linear_system_solution(num::linalg::GaussSeidelMethod<double>(mat, vec, 1e-9, 100));
 		break;
 	case '5':
-		print_linear_system_solution(num::SOR<double>(mat, vec, 1e-9, 100, 1.1));
+		print_linear_system_solution(num::linalg::SOR<double>(mat, vec, 1e-9, 100, 1.1));
 		break;
 	}
 
@@ -165,7 +165,7 @@ int numerical_differentiation_mode(char algo)
 {
 	std::cout << "NUMERICAL DIFFERENTIATION MODE" << std::endl;
 
-	num::Matrix<double> vec;
+	num::linalg::Matrix<double> vec;
 	if (!read_matrix(vec, "reading measurement vector (a0; a1;[ ...;]:")) {
 		std::cout << "error reading vector." << std::endl;
 		return -1;
@@ -175,7 +175,7 @@ int numerical_differentiation_mode(char algo)
 	std::cout << "reading measure distance h: " << std::endl;
 	std::cin >> h;
 
-	num::NumDiffer<double> d = num::NumDiffer<double>(vec, h, std::stoi(std::string(1, algo)));
+	num::differ::NumDiffer<double> d = num::differ::NumDiffer<double>(vec, h, std::stoi(std::string(1, algo)));
 	std::cout << "solution:\n" << std::setprecision(std::numeric_limits<double>::max_digits10) << d.derivated() << std::endl;
 
 	return 0;
@@ -185,12 +185,12 @@ int root_finding_mode(char algo)
 {
 	std::cout << "ROOT-FINDING MODE" << std::endl;
 
-	num::NewtonRaphson nr = num::NewtonRaphson(
-		[] (double x) -> double { return 2 * x * x * x - x * x - 6; },
-		[] (double x) -> double { return 6 * x * x - 2 * x; },
-		-1.0,
+	num::root::NewtonRaphson nr = num::root::NewtonRaphson(
+		[] (double x) -> double { return x * x * x - 2; },
+		[] (double x) -> double { return 3 * x * x; },
+		2.0,
 		1e-9,
-		100
+		6
 		);
 
 	std::cout << "solution:\n" << std::setprecision(std::numeric_limits<double>::max_digits10) << nr.zero() << std::endl;
@@ -198,7 +198,7 @@ int root_finding_mode(char algo)
 	return 0;
 }
 
-void print_linear_system_solution(const num::LinearSolver<double>& solv)
+void print_linear_system_solution(const num::linalg::LinearSolver<double>& solv)
 {
 	std::cout << "solution:\n" << std::setprecision(std::numeric_limits<double>::digits10) << solv.x() << std::endl;
 }

@@ -5,6 +5,7 @@
 #include "iterative-method.hh"
 
 namespace num {
+namespace linalg {
 	template<typename T>
 	class JacobiMethod : public LinearSolver<T>, public IterativeMethod<T> {
 	public:
@@ -36,8 +37,13 @@ namespace num {
 				}
 				this->_x(j, 0) = (this->_b(j, 0) - sum) / this->_a(j, j);
 			}
+#ifndef N_DEBUG
+			std::cout << "i: " << i - 1 << " err: " << norm_2(this->_b - this->_a * this->_x) << "\n";
+#endif
 		}
+#ifndef N_DEBUG
 		std::cout << "iterations: " << i - 1 << std::endl;
+#endif
 	}
 
 	template<typename T>
@@ -69,9 +75,14 @@ namespace num {
 					if (j != k) sum += this->_a(j, k) * this->_x(k, 0);
 				}
 				this->_x(j, 0) = (this->_b(j, 0) - sum) / this->_a(j, j);
-			}	
+			}
+#ifndef N_DEBUG
+			std::cout << "i: " << i - 1 << " err: " << norm_2(this->_b - this->_a * this->_x) << "\n";
+#endif
 		}
+#ifndef N_DEBUG
 		std::cout << "iterations: " << i - 1 << std::endl;
+#endif
 	}
 
 	template<typename T>
@@ -114,10 +125,16 @@ namespace num {
 					if (j != k) sum += this->_a(j, k) * this->_x(k, 0);
 				}
 				this->_x(j, 0) = this->_x(j, 0) + _rlx * (((this->_b(j, 0) - sum) / this->_a(j, j)) - this->_x(j, 0));
-			}	
+			}
+#ifndef N_DEBUG
+			std::cout << "i: " << i - 1 << " err: " << norm_2(this->_b - this->_a * this->_x) << "\n";
+#endif
 		}
+#ifndef N_DEBUG
 		std::cout << "iterations: " << i - 1 << std::endl;
+#endif
 	}
 }
-
+}
+	
 #endif /* ITERATIVE_SOLVERS_HH */

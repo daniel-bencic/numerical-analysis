@@ -5,6 +5,7 @@
 #include "matrix.hh"
 
 namespace num {
+namespace linalg {
 	template<typename T>
 	class DirectSolver : public LinearSolver<T> {
 	public:
@@ -147,5 +148,6 @@ namespace num {
 		this->_x = this->back_substitution(concat_matrices(_r, res_y));
 	}
 }
-
+}
+	
 #endif /* DIRECT_SOLVERS_HH */

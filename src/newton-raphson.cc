@@ -1,7 +1,9 @@
 #include <cmath>
+#include <iostream>
 #include "newton-raphson.hh"
 
 namespace num {
+namespace root {
 	NewtonRaphson::NewtonRaphson()
 		: _z(0.0), _fn(nullptr), _d_fn(nullptr)
 	{ }
@@ -24,7 +26,17 @@ namespace num {
 		do {
 			tmp = _z;
 			_z = _z - (_fn(_z) / _d_fn(_z));
+			
+#ifndef N_DEBUG
+			std::cout << "i: " << i << " x: " << tmp << " err: " << std::abs(tmp - _z) << "\n";
+#endif
 		}
 		while (++i < this->_its && std::abs(tmp - _z) > this->_tol);
+
+#ifndef N_DEBUG
+		std::cout << "iterations: " << i << std::endl;
+#endif
 	}
+}	
 }
+

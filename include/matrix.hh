@@ -8,6 +8,7 @@
 #include <cmath>
 
 namespace num {
+namespace linalg {
 	template<typename T>
 	class Matrix {
 	public:
@@ -270,6 +271,7 @@ namespace num {
 
 		return std::sqrt(sum);
 	}
+}
 }
 
 #endif /* MATRIX_HH */
