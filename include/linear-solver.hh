@@ -11,20 +11,20 @@ namespace linalg {
 	class LinearSolver : public Solver {
 	public:
 		LinearSolver() = default;
-		LinearSolver(num::linalg::Matrix<T> a, num::linalg::Matrix<T> b);
-		num::linalg::Matrix<T> x() const;
+		LinearSolver(Matrix<T> a, Matrix<T> b);
+		Matrix<T> x() const;
 
 	protected:	
-		num::linalg::Matrix<T> _a, _b, _x;
+		Matrix<T> _a, _b, _x;
 	};
 
 	template<typename T>
-	LinearSolver<T>::LinearSolver(num::linalg::Matrix<T> a, num::linalg::Matrix<T> b)
+	LinearSolver<T>::LinearSolver(Matrix<T> a, Matrix<T> b)
 		: _a(a), _b(b)
 	{ }
 
 	template<typename T>
-	num::linalg::Matrix<T> LinearSolver<T>::x() const
+	Matrix<T> LinearSolver<T>::x() const
 	{
 		return _x;
 	}
